@@ -2,7 +2,6 @@ import pygame
 import numpy as np
 import sys
 import time
-
 import pandas as pd
 
 from MCTS import MCTS
@@ -27,6 +26,7 @@ def update_by_man(event,mat):
         col = round((x - 40) / 40)
         mat[row][col]=1
     return mat, done
+
 def draw_board(screen):    
     """
     This function draws the board with lines.
@@ -42,6 +42,7 @@ def draw_board(screen):
     for h in range(0, M):
         pygame.draw.line(screen, black_color,[40, h * d+40], [600, 40+h * d], 1)
         pygame.draw.line(screen, black_color, [40+d*h, 40], [40+d*h, 600], 1)
+        
 def draw_stone(screen, mat):
     """
     This functions draws the stones according to the mat. It draws a black circle for matrix element 1(human),
@@ -79,69 +80,27 @@ def render(screen, mat):
     draw_stone(screen, mat)
     pygame.display.update()
 
-def draw_win_or_lose(screen,mat):    
+def draw_win_or_lose(screen,board):    
     """
     This function draws the board with final result.
     input: game windows
     output: "win" or "lose" infomation
     """
     draw_board(screen)
-    draw_stone(screen, mat)
+    draw_stone(screen, board.board)
     font = pygame.font.SysFont('timesnewromanttf',42)
     font_color = [139,69,19]
-    if check_for_win(mat,1) == True:
+    if board.game_result() == 1:
         TextSurf = font.render('Game Over! Yon Win!',True,font_color)
-    if check_for_win(mat,-1) == True:
-        TextSurf = font.render('Game Over! Yon Lose!',True,font_color)        
+    elif board.game_result() == 0:
+        TextSurf = font.render('Game Over! Yon Lose!',True,font_color)   
+    else:
+        TextSurf = font.render('Game Over! A Tie!',True,font_color)  
     TextRect = TextSurf.get_rect()
     TextRect.center = (320,320)
     screen.blit(TextSurf,TextRect)
     pygame.display.update()
 
-def check_a_list(ary,player):
-    for i in range(len(ary)-4):
-        count = 0
-        j = i
-        while ary[j] == player:
-            if ary[j] == ary[j+1]:
-                count += 1
-                j += 1
-                if count == 4:
-                    return True
-            else:
-                break
-    return False
-
-def check_for_win(mat,player):
-    
-    m,n = mat.shape
-    mat2 = pd.DataFrame(mat)
-    #horizontal        
-    for i in range(m):
-        ary = mat[i]
-        check = check_a_list(ary,player)
-        if check == True:
-            return True
-    #vertical
-    for j in range(n):
-        ary = np.array(mat2.loc[:,j])
-        check = check_a_list(ary,player)
-        if check == True:
-            return True
-    #diagonal
-    for k in range(-(max(m,n)-5),max(m,n)-4):
-        ary = [mat2.loc[i,j] for i in range(m) for j in range(n) if i - j == k]
-        check = check_a_list(ary,player)
-        if check == True:
-            return True
-    #anti-diagonal
-    for l in range(4, max(m,n) *2 - 5):
-        ary = [mat2.loc[i,j] for i in range(m) for j in range(n) if i + j == l]
-        check = check_a_list(ary,player)
-        if check == True:
-            return True    
-    
-    return False
 
 def AI(board, player, last_position):
     mcts = MCTS(board, 5)
@@ -151,8 +110,7 @@ def AI(board, player, last_position):
 def main():
     
     global M
-    
-    M=5
+    M=8
     
     pygame.init()
     screen=pygame.display.set_mode((640,640))
@@ -177,35 +135,15 @@ def main():
                 if not board.move((row, col), 1):
                     print('The position is not available.')
                     break
-                # mat[row][col] = 1
-                # render(screen, mat)
-                # done = check_for_win(mat,1)
                 render(screen, board.board)
-                done = check_for_win(board.board,1)
+                done = board.check_for_win(1)
                 if not done:
-                    "this is just temp move of computer for test!"
-                    "need to substitude by the MontCalo tree research result"
-                    # while True:
-                    #     x = np.random.randint(0,M,1)[0]
-                    #     y = np.random.randint(0,M,1)[0]
-                    #     if mat[x-1,y-1] != 0:
-                    #         continue
-                    #     else:
-                    #         mat[x-1,y-1] = -1
-                    #         break
                     AI_position = AI(board, -1, (row, col))
                     board.move(AI_position, -1)
-                    #time.sleep(2)
                     render(screen, board.board)
-                    done = check_for_win(board.board,-1)
-
-                               
-                #get the next move from computer/MCTS
-                # check for win or tie
-                # print message if game finished
-                # otherwise contibue
+                    done = board.check_for_win(-1)
     
-    draw_win_or_lose(screen,board.board)
+    draw_win_or_lose(screen,board)
 
     pygame.quit()    
 if __name__ == '__main__':
