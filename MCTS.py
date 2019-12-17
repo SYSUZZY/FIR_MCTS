@@ -39,7 +39,7 @@ class Node(object):
             print('The node has no child!')
             return None
         children_scores = [(child, score_method(child)) for child in self.children]
-        best_child = max(children_scores, key=lambda x: x[1])
+        best_child = max(children_scores, key=lambda x: x[1])[0]
         return best_child
 
     
@@ -93,6 +93,7 @@ class MCTS(object):
         '''
         begin_time = time.time()
         while self.resources_left(begin_time):
+            print('simulation times:{}'.format(self.simulation_times))
             leaf = self.traverse(root)         # leaf is unvisited node
             simulation_result = self.rollout(deepcopy(leaf))
             self.backpropagate(leaf, simulation_result)
@@ -119,8 +120,6 @@ class MCTS(object):
         Simulate a game up to game over
         '''
         while not self.is_terminal(node):
-            # print('simulate')
-            # print(node.board.board)
             node = self.rollout_policy(node)
         return node.board.game_result()
 
@@ -150,15 +149,16 @@ class MCTS(object):
         (For the traverse function, to avoid using up too much time or resources, you may start considering only 
         a subset of children (e.g 5 children). Increase this number or by choosing this subset smartly later.)
         '''
+        
         while node.fully_expanded():
             node = node.get_best_child(self.uct)
         # node is not fully expanded
-        if len(node.children) == 0:
-            # If the node is a fully unexpanded node, return itself
+        if self.is_terminal(node):
+            # if the node is terminal
             unvisited_node = node
         else:
-            # If the node is a not a fully unexpanded node, expand it and return the new one
-            unvisited_node = node.expend_child()
+            # if the node is no a terminal
+            unvisited_node = node.expand_child()
         return unvisited_node
 
 
