@@ -143,10 +143,10 @@ def check_for_win(mat,player):
     
     return False
 
-def AI(mat, player, last_position):
-    mcts = MCTS(Board(mat), 10)
-    mat = mcts.choose_position(-1)
-    return mat
+def AI(board, player, last_position):
+    mcts = MCTS(board, 5)
+    position = mcts.choose_position(-1, last_position)
+    return position
 
 def main():
     
@@ -163,7 +163,8 @@ def main():
     draw_board(screen)
     pygame.display.update()
 
-    
+    # Board
+    board = Board(mat)    
     while not done:
         for event in pygame.event.get():
             if event.type==pygame.QUIT:
@@ -173,9 +174,14 @@ def main():
                 (x,y)=event.pos
                 row = round((y - 40) / d)     
                 col = round((x - 40) / d)
-                mat[row][col] = 1
-                render(screen, mat)
-                done = check_for_win(mat,1)
+                if not board.move((row, col), 1):
+                    print('The position is not available.')
+                    break
+                # mat[row][col] = 1
+                # render(screen, mat)
+                # done = check_for_win(mat,1)
+                render(screen, board.board)
+                done = check_for_win(board.board,1)
                 if not done:
                     "this is just temp move of computer for test!"
                     "need to substitude by the MontCalo tree research result"
@@ -187,10 +193,11 @@ def main():
                     #     else:
                     #         mat[x-1,y-1] = -1
                     #         break
-                    mat = AI(mat, -1, (row, col))
+                    AI_position = AI(board, -1, (row, col))
+                    board.move(AI_position, -1)
                     #time.sleep(2)
-                    render(screen, mat)
-                    done = check_for_win(mat,-1)
+                    render(screen, board.board)
+                    done = check_for_win(board.board,-1)
 
                                
                 #get the next move from computer/MCTS
@@ -198,7 +205,7 @@ def main():
                 # print message if game finished
                 # otherwise contibue
     
-    draw_win_or_lose(screen,mat)
+    draw_win_or_lose(screen,board.board)
 
     pygame.quit()    
 if __name__ == '__main__':

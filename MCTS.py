@@ -52,7 +52,7 @@ class Node(object):
         if len(self.children) < self.max_expend_num:
             new_board = deepcopy(self.board)
             player = -self.player # change player
-            position = random.choice(new_board.available) # random choose an available position
+            position = random.choice(new_board.availables) # random choose an availables position
             new_board.move(position, player)
             new_child = Node(new_board, player, self, position)
             self.children.append(new_child)
@@ -78,13 +78,12 @@ class MCTS(object):
         '''
         Choose a position
         '''
-        # One available position left in the board
+        # One availables position left in the board
         if len(self.board.availables) == 1:
             return self.board.availables[0]
-        
-        root = Node(deepcopy(self.board), cur_player, None, cur_position)  # root is the current state of board
 
-        position = self.monte_carlo_tree_search(root).board
+        root = Node(deepcopy(self.board), cur_player, None, cur_position)  # root is the current state of board
+        position = self.monte_carlo_tree_search(root).position
         return position
         
 
@@ -119,14 +118,16 @@ class MCTS(object):
         '''
         Simulate a game up to game over
         '''
-        while self.is_terminal(node):
+        while not self.is_terminal(node):
+            # print('simulate')
+            # print(node.board.board)
             node = self.rollout_policy(node)
-        return node.result
+        return node.board.game_result()
 
 
     def is_terminal(self, node):
         '''
-        Wether the node is terminal, which means someone win or no available position.
+        Wether the node is terminal, which means someone win or no availables position.
         '''
         terminal_flag = False
         if len(node.board.availables) == 0:
@@ -139,7 +140,7 @@ class MCTS(object):
         '''
         Random put a position
         '''
-        return node.expand()
+        return node.expand_child()
 
 
     def traverse(self, node):
@@ -161,11 +162,11 @@ class MCTS(object):
         return unvisited_node
 
 
-    def resources_left(self, time):
+    def resources_left(self, begin_time):
         '''
         Wether the resources left
         '''
-        isLeft = (time.time() - time) < self.max_decision_time
+        isLeft = (time.time() - begin_time) < self.max_decision_time
         return isLeft
 
 
