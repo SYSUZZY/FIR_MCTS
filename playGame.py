@@ -5,6 +5,9 @@ import time
 
 import pandas as pd
 
+from MCTS import MCTS
+from Board import Board
+
 def update_by_man(event,mat):
     """
     This function detects the mouse click on the game window. Update the state matrix of the game. 
@@ -140,11 +143,16 @@ def check_for_win(mat,player):
     
     return False
 
+def AI(mat, player, last_position):
+    mcts = MCTS(Board(mat), 10)
+    mat = mcts.choose_position(-1)
+    return mat
+
 def main():
     
     global M
     
-    M=8
+    M=5
     
     pygame.init()
     screen=pygame.display.set_mode((640,640))
@@ -171,15 +179,15 @@ def main():
                 if not done:
                     "this is just temp move of computer for test!"
                     "need to substitude by the MontCalo tree research result"
-                    while True:
-                        x = np.random.randint(0,M,1)[0]
-                        y = np.random.randint(0,M,1)[0]
-                        if mat[x-1,y-1] != 0:
-                            continue
-                        else:
-                            mat[x-1,y-1] = -1
-                            break
-
+                    # while True:
+                    #     x = np.random.randint(0,M,1)[0]
+                    #     y = np.random.randint(0,M,1)[0]
+                    #     if mat[x-1,y-1] != 0:
+                    #         continue
+                    #     else:
+                    #         mat[x-1,y-1] = -1
+                    #         break
+                    mat = AI(mat, -1, (row, col))
                     #time.sleep(2)
                     render(screen, mat)
                     done = check_for_win(mat,-1)
@@ -191,7 +199,7 @@ def main():
                 # otherwise contibue
     
     draw_win_or_lose(screen,mat)
-    
+
     pygame.quit()    
 if __name__ == '__main__':
     main()

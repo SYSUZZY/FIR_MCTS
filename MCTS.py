@@ -1,6 +1,7 @@
 import numpy as np 
 import pandas as pd 
 import time
+import random
 
 from copy import deepcopy
 
@@ -9,10 +10,11 @@ class Node(object):
     Node in the MCT
     '''
     
-    def __init__(self, board, player, parent):
+    def __init__(self, board, player, parent, position):
         self.board = board
         self.player = player
         self.parent = parent
+        self.position = position
 
         self.children = []
 
@@ -21,12 +23,12 @@ class Node(object):
         self.visited_times = 0
         
 
-
     def fully_expanded(self):
         '''
         Wether the node is fully expanded
         '''
         return len(self.children) == self.max_expend_num
+
 
     def get_best_child(self, score_method):
         '''
@@ -48,10 +50,11 @@ class Node(object):
         The child put a chess in a random position
         '''
         if len(self.children) < self.max_expend_num:
-            board = deepcopy(self.board)
-            player = 1-self.player
-            board.move(player)
-            new_child = Node(board, player, self)
+            new_board = deepcopy(self.board)
+            player = -self.player # change player
+            position = random.choice(new_board.available) # random choose an available position
+            new_board.move(position, player)
+            new_child = Node(new_board, player, self, position)
             self.children.append(new_child)
             return new_child
         else:
@@ -71,8 +74,7 @@ class MCTS(object):
         self.simulation_times = 0 # the times of simulation
 
     
-    
-    def choose_position(self, cur_player):
+    def choose_position(self, cur_player, cur_position):
         '''
         Choose a position
         '''
@@ -80,9 +82,10 @@ class MCTS(object):
         if len(self.board.availables) == 1:
             return self.board.availables[0]
         
-        root = Node(deepcopy(self.board), cur_player, None)  # root is the current state of board
-        new_board = self.monte_carlo_tree_search(root).board
-        return new_board
+        root = Node(deepcopy(self.board), cur_player, None, cur_position)  # root is the current state of board
+
+        position = self.monte_carlo_tree_search(root).board
+        return position
         
 
     def monte_carlo_tree_search(self, root):
