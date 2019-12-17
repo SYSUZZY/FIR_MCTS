@@ -65,7 +65,7 @@ class MCTS(object):
     '''
 
     def __init__(self, board, max_decision_time):
-        self.board = board  # Chess Board
+        self.board = board  # Chess board
         self.max_decision_time = max_decision_time
         self.confident = 1.96 # the constant in UCT score function
         self.simulation_times = 0 # the times of simulation
@@ -81,8 +81,8 @@ class MCTS(object):
             return self.board.availables[0]
         
         root = Node(deepcopy(self.board), cur_player, None)  # root is the current state of board
-        new_broad = self.monte_carlo_tree_search(root).board
-        return new_broad
+        new_board = self.monte_carlo_tree_search(root).board
+        return new_board
         
 
     def monte_carlo_tree_search(self, root):
@@ -123,7 +123,7 @@ class MCTS(object):
 
     def is_terminal(self, node):
         '''
-        Wether the node is terminal, which means someone win or no avaliable position.
+        Wether the node is terminal, which means someone win or no available position.
         '''
         terminal_flag = False
         if len(node.board.availables) == 0:
