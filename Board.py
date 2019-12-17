@@ -6,7 +6,7 @@ class Board(object):
     def __init__(self, board):
         '''
         board: store the current chess board
-        availables: read the available sites in "[x,y]"
+        availables: read the available sites in the type of tuple (x,y)
         '''
         self.board = board
         self.availables = [(i,j) for i in range(self.board.shape[0]) for j in range(self.board.shape[1]) if self.board[i][j] == 0] 
