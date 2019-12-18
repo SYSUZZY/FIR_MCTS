@@ -13,7 +13,6 @@ class Board(object):
         self.availables = [(i,j) for i in range(self.board.shape[0]) for j in range(self.board.shape[1]) if self.board[i][j] == 0]
         self.unavailables = [(i,j) for i in range(self.board.shape[0]) for j in range(self.board.shape[1]) if self.board[i][j] != 0]
 
-    
     def move(self, position, player):
         '''
         input: position,player
@@ -51,6 +50,11 @@ class Board(object):
         is_over: bool
         winner: if no winner, return None, else return winner
         '''
+        # unavailables = [(i,j) for i in range(self.board.shape[0]) for j in range(self.board.shape[1]) if self.board[i][j] != 0]
+        # print(unavailables)
+        if(len(self.unavailables) < self.n_in_row + 2):
+            return False, None
+
         board = self.board
         height = board.shape[0]
         width = board.shape[1]

@@ -103,7 +103,7 @@ def draw_win_or_lose(screen,board):
 
 
 def AI(board, last_player, last_position):
-    mcts = MCTS(board, 5, 1000)
+    mcts = MCTS(board, 3, 50000)
     position = mcts.choose_position(last_player, last_position)
     return position
 

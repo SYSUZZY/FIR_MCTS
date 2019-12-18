@@ -15,7 +15,7 @@ class MCTSNode(object):
 
         self.children = []
 
-        self.max_expend_num = 10  # A node has 10 children or available position num at most
+        self.max_expend_num = 100  # A node has 10 children or available position num at most
         if len(board.availables) < self.max_expend_num:
             self.max_expend_num = len(board.availables)
 
@@ -74,22 +74,3 @@ class MCTSNode(object):
             print('Reach the maximum children number!')
             return None
     
-
-    def different_position(self, availables):
-        '''
-        Find a different position with other children
-        '''
-        if len(self.children) == 0:
-            # parent has no child
-            return random.choice(availables)
-        
-        # parent has child
-        not_find = True
-        while not_find:
-            position = random.choice(availables)
-            not_find = False
-            for child in self.children:
-                if position == child.position:
-                    not_find = True
-                    break
-        return position

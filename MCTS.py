@@ -6,6 +6,9 @@ import random
 from copy import deepcopy
 
 from MCTSNode import MCTSNode
+from Board import Board
+
+max_workers=4
 
 class MCTS(object):
     '''
@@ -13,7 +16,7 @@ class MCTS(object):
     '''
 
     def __init__(self, board, max_decision_time, max_simulation_times):
-        self.board = board  # Chess board
+        self.board =  Board(board.board, board.n_in_row) # Chess board
         self.max_decision_time = max_decision_time
         self.max_simulation_times = max_simulation_times
 
@@ -38,12 +41,15 @@ class MCTS(object):
         '''
         MCTS process
         '''
+        time_mcts = time.time()
         while self.resources_left():
             leaf = self.traverse(root)         # leaf is unvisited node
-            simulation_result = self.rollout(deepcopy(leaf))
-            self.backpropagate(leaf, simulation_result)            
+            simulation_result = self.rollout(leaf)
+            self.backpropagate(leaf, simulation_result)
             self.simulation_times = root.visited_times
-        print(self.simulation_times)
+            # print(len(root.children))
+        print('Simulation Times: {}'.format(self.simulation_times))
+        print('Simulation time: {}'.format(time.time()-time_mcts))
         return root.get_best_child(self.uct)
     
 
@@ -59,13 +65,13 @@ class MCTS(object):
             # The node is a root
             return
         self.backpropagate(node.parent, result)
-        
+
 
     def rollout(self, node):
         '''
         Simulate a game up to game over
         '''
-        current_state = node.board
+        current_state = deepcopy(node.board)
         player = node.player
         is_over, winner = current_state.check_game_result()
         while not is_over:
@@ -98,16 +104,12 @@ class MCTS(object):
         (For the traverse function, to avoid using up too much time or resources, you may start considering only 
         a subset of children (e.g 10 children). Increase this number or by choosing this subset smartly later.)
         '''
-        while node.fully_expanded():
-            node = node.get_best_child(self.uct)
-        # node is not fully expanded
-        if self.is_terminal(node):
-            # if the node is terminal
-            unvisited_node = node
-        else:
-            # if the node is no a terminal
-            unvisited_node = node.expand_child()
-        return unvisited_node
+        while not self.is_terminal(node):
+            if not node.fully_expanded():
+                return node.expand_child()
+            else:
+                node = node.get_best_child(self.uct)
+        return node
 
 
     def resources_left(self):
