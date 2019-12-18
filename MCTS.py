@@ -94,13 +94,13 @@ class MCTS(object):
         '''
         Choose nearest positions first.
         '''
-        nearest_positions = []
-        if len(board.availables) > board.n_in_row:
-            nearest_positions = self.find_nearest_position_first(board)
-        if len(nearest_positions):
-            return random.choice(nearest_positions)
-        else:
-            return random.choice(board.availables)
+        # nearest_positions = []
+        # if len(board.availables) > board.n_in_row:
+        #     nearest_positions = self.find_nearest_position_first(board)
+        # if len(nearest_positions):
+        #     return random.choice(nearest_positions)
+        # else:
+        return random.choice(board.availables)
 
     def find_nearest_position_first(self, board):
         '''
