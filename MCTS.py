@@ -43,21 +43,33 @@ class MCTS(object):
         '''
         time_mcts = time.time()
         while self.resources_left():
-            if self.is_terminal(root):
-                print('error1')
+            # print(root.board.board)
+            # print(root.board.availables)
+            # print(root.board.unavailables)
+            # if self.is_terminal(root):
+                # print(root.board.board)
+                # print(root.board.availables)
+                # print(root.board.unavailables)
+                # print('error1')
             leaf = self.traverse(root)         # leaf is unvisited node
-            if self.is_terminal(root):
-                print('error2')
+            # if self.is_terminal(root):
+                # print(root.board.board)
+                # print(root.board.availables)
+                # print(root.board.unavailables)
+                # print('error2')
             simulation_result = self.rollout(leaf)
-            if self.is_terminal(root):
-                print('error3')
-                break
+            # if self.is_terminal(root):
+            #     print(root.board.board)
+            #     print(root.board.availables)
+            #     print(root.board.unavailables)
+            #     print('error3')
+            #     exit()
                 # print(root.board.check_game_result())
                 # print(root.board.game_result())
             self.backpropagate(leaf, simulation_result)
             self.simulation_times = root.visited_times
             # print(len(root.children))
-        root.show_MCTS()
+        # root.show_MCTS()
         print('Simulation Times: {}'.format(self.simulation_times))
         print('Simulation time: {}'.format(time.time()-time_mcts))
         return root.get_best_child(self.uct)
@@ -153,12 +165,12 @@ class MCTS(object):
         '''
         while not self.is_terminal(node):
             if not node.fully_expanded():
-                print('error here')
+                # print('error here')
                 return node.expand_child()
             else:
-                print('error here1')
+                # print('error here1')
                 node = node.get_best_child(self.uct)
-        print('error here2')
+        # print('error here2')
         return node
 
 

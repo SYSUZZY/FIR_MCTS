@@ -29,7 +29,7 @@ class MCTSNode(object):
     @property
     def untried_actions(self):
         if self._untried_actions is None:
-            self._untried_actions = self.board.availables
+            self._untried_actions = deepcopy(self.board.availables)
         random.shuffle(self._untried_actions)
         return self._untried_actions
         
