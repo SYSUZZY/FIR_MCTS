@@ -1,5 +1,6 @@
 import random
 from copy import deepcopy
+from Board import Board
 
 class MCTSNode(object):
     '''
@@ -15,7 +16,7 @@ class MCTSNode(object):
         self.children = []
 
         self.max_expend_num = 10  # A node has 10 children or available position num at most
-        if len(board.availables) > self.max_expend_num:
+        if len(board.availables) < self.max_expend_num:
             self.max_expend_num = len(board.availables)
 
         self.win_times = 0
@@ -64,6 +65,7 @@ class MCTSNode(object):
             state = deepcopy(self.board)
             position = self.untried_actions.pop() # random choose an availables position
             state.move(position, player)
+            state = Board(state.board, state.n_in_row)
 
             new_child = MCTSNode(state, player, self, position)
             self.children.append(new_child)

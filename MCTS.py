@@ -21,7 +21,6 @@ class MCTS(object):
         self.simulation_times = 0 # the times of simulation
         self.begin_time = time.time() # start the MCTS time
 
-
     
     def choose_position(self, last_player, last_position):
         '''
@@ -42,8 +41,9 @@ class MCTS(object):
         while self.resources_left():
             leaf = self.traverse(root)         # leaf is unvisited node
             simulation_result = self.rollout(deepcopy(leaf))
-            self.backpropagate(leaf, simulation_result)
+            self.backpropagate(leaf, simulation_result)            
             self.simulation_times = root.visited_times
+        print(self.simulation_times)
         return root.get_best_child(self.uct)
     
 
@@ -67,18 +67,21 @@ class MCTS(object):
         '''
         current_state = node.board
         player = node.player
-        while not current_state.is_over():
+        is_over, winner = current_state.check_game_result()
+        while not is_over:
             player = -1*player
             position = self.rollout_policy(current_state)
             current_state.move(position, player)
-        return current_state.game_result()
+            is_over, winner = current_state.check_game_result()
+        return winner
 
 
     def is_terminal(self, node):
         '''
         Wether the node is terminal, which means someone win or no availables position.
         '''
-        return node.board.is_over()
+        is_terminal, _ = node.board.check_game_result()
+        return is_terminal
 
 
     def rollout_policy(self, board):
@@ -120,4 +123,4 @@ class MCTS(object):
         '''
         Score function
         '''
-        return (node.win_times/node.visited_times) + self.confident*np.sqrt(2*np.log(node.parent.visited_times)/node.visited_times)
+        return (node.win_times/node.visited_times) + self.confident*np.sqrt(np.log(node.parent.visited_times)/node.visited_times)

@@ -103,14 +103,14 @@ def draw_win_or_lose(screen,board):
 
 
 def AI(board, last_player, last_position):
-    mcts = MCTS(board, 10, 1000)
+    mcts = MCTS(board, 5, 1000)
     position = mcts.choose_position(last_player, last_position)
     return position
 
 def main():
     
     global M
-    M=6
+    M=5
     
     pygame.init()
     screen=pygame.display.set_mode((640,640))
@@ -122,7 +122,7 @@ def main():
     pygame.display.update()
 
     # Board
-    board = Board(mat)    
+    board = Board(mat, 5)    
     while not done:
         for event in pygame.event.get():
             if event.type==pygame.QUIT:

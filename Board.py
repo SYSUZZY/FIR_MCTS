@@ -3,13 +3,15 @@ import pandas as pd
 
 class Board(object):
 
-    def __init__(self, board):
+    def __init__(self, board, n_in_row):
         '''
         board: store the current chess board
         availables: read the available sites in the type of tuple (x,y)
         '''
         self.board = board
-        self.availables = [(i,j) for i in range(self.board.shape[0]) for j in range(self.board.shape[1]) if self.board[i][j] == 0] 
+        self.n_in_row = n_in_row
+        self.availables = [(i,j) for i in range(self.board.shape[0]) for j in range(self.board.shape[1]) if self.board[i][j] == 0]
+        self.unavailables = [(i,j) for i in range(self.board.shape[0]) for j in range(self.board.shape[1]) if self.board[i][j] != 0]
 
     
     def move(self, position, player):
@@ -23,7 +25,8 @@ class Board(object):
             return False
         else:
             self.board[x,y] = player
-            self.availables = [(i,j) for i in range(self.board.shape[0]) for j in range(self.board.shape[1]) if self.board[i][j] == 0] 
+            self.availables.remove((x,y))
+            self.unavailables.append((x,y))
             return True
                        
     def check_a_list(self,ary,player):
@@ -40,7 +43,42 @@ class Board(object):
                     break
         return False
 
-                
+    def check_game_result(self):
+        '''
+        Check the game result
+
+        Return
+        is_over: bool
+        winner: if no winner, return None, else return winner
+        '''
+        board = self.board
+        height = board.shape[0]
+        width = board.shape[1]
+        for chess in self.unavailables:
+            row = chess[0]; col = chess[1]
+            # Check in vertical
+            if row <= height-self.n_in_row:
+                if len(set([board[row+i][col] for i in range(self.n_in_row)])) == 1:
+                    return True, board[row][col]
+            # Check in horizontal
+            if col <= width-self.n_in_row:
+                if len(set([board[row][col+i] for i in range(self.n_in_row)])) == 1:
+                    return True, board[row][col]
+            # Check in diagonal
+            if (row <= height-self.n_in_row) and (col <= width-self.n_in_row):
+                if len(set([board[row+i][col+i] for i in range(self.n_in_row)])) == 1:
+                    return True, board[row][col]
+            # Check in anti-diagonal
+            if (row <= height-self.n_in_row) and (col >= self.n_in_row-1):
+                if len(set([board[row+i][col-i] for i in range(self.n_in_row)])) == 1:
+                    return True, board[row][col]
+
+        # No one wins till no vacancy in board
+        if len(self.availables) == 0:
+            return True, None
+
+        return False, None
+
     def check_for_win(self,player):
         mat = self.board
         m,n = mat.shape
