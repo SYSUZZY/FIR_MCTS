@@ -20,7 +20,7 @@ class MCTS(object):
         self.max_decision_time = max_decision_time
         self.max_simulation_times = max_simulation_times
 
-        self.confident = 1.96 # the constant in UCT score function
+        self.confident = 0.05 # the constant in UCT score function
         self.simulation_times = 0 # the times of simulation
         self.begin_time = time.time() # start the MCTS time
 
@@ -43,11 +43,21 @@ class MCTS(object):
         '''
         time_mcts = time.time()
         while self.resources_left():
+            if self.is_terminal(root):
+                print('error1')
             leaf = self.traverse(root)         # leaf is unvisited node
+            if self.is_terminal(root):
+                print('error2')
             simulation_result = self.rollout(leaf)
+            if self.is_terminal(root):
+                print('error3')
+                break
+                # print(root.board.check_game_result())
+                # print(root.board.game_result())
             self.backpropagate(leaf, simulation_result)
             self.simulation_times = root.visited_times
             # print(len(root.children))
+        root.show_MCTS()
         print('Simulation Times: {}'.format(self.simulation_times))
         print('Simulation time: {}'.format(time.time()-time_mcts))
         return root.get_best_child(self.uct)
@@ -143,9 +153,12 @@ class MCTS(object):
         '''
         while not self.is_terminal(node):
             if not node.fully_expanded():
+                print('error here')
                 return node.expand_child()
             else:
+                print('error here1')
                 node = node.get_best_child(self.uct)
+        print('error here2')
         return node
 
 
