@@ -81,7 +81,7 @@ class Board(object):
         '''
         Wether the game is over
         '''
-        if self.check_for_win(1) or self.check_for_win(-1):
+        if self.check_for_win(1) or self.check_for_win(-1) or (len(self.availables)==0):
             return True
         else:
             return False

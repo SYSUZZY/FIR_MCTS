@@ -102,15 +102,15 @@ def draw_win_or_lose(screen,board):
     pygame.display.update()
 
 
-def AI(board, player, last_position):
-    mcts = MCTS(board, 5)
-    position = mcts.choose_position(-1, last_position)
+def AI(board, last_player, last_position):
+    mcts = MCTS(board, 10, 1000)
+    position = mcts.choose_position(last_player, last_position)
     return position
 
 def main():
     
     global M
-    M=8
+    M=6
     
     pygame.init()
     screen=pygame.display.set_mode((640,640))
@@ -138,7 +138,7 @@ def main():
                 render(screen, board.board)
                 done = board.check_for_win(1)
                 if not done:
-                    AI_position = AI(board, -1, (row, col))
+                    AI_position = AI(board, 1, (row, col))
                     board.move(AI_position, -1)
                     render(screen, board.board)
                     done = board.check_for_win(-1)
