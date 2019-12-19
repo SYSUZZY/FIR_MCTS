@@ -133,7 +133,6 @@ class Board(object):
                 pattern_5 = [state[row+i][col-i] for i in range(self.n_in_row)]
                 if (len(set(pattern_5)) == 2) and (abs(sum(pattern_5)) == self.n_in_row-1):
                     children_list.append((row+4, col-4))
-        
         return list(set(children_list))
 
 
@@ -144,8 +143,8 @@ class Board(object):
         if (abs(pattern_sum) == self.n_in_row-1) and (pattern_set == 2):
             empty_in_pattern.append(pattern_5.index(0))
         elif (abs(pattern_sum) == self.n_in_row-2) and (pattern_set == 2):
-            empty_in_pattern.append(0)
-            empty_in_pattern.append(4)
+            empty_in_pattern.append(pattern_5.index(0))
+            empty_in_pattern.append(pattern_5.index(0, 1))
         elif (abs(pattern_sum) == self.n_in_row-3) and (len(set(pattern_3)) == 1):
             empty_in_pattern.append(pattern_5.index(0))
         return list(set(empty_in_pattern))
