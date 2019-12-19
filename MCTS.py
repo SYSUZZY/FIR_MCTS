@@ -114,47 +114,9 @@ class MCTS(object):
 
     def rollout_policy(self, board):
         '''
-        Choose nearest positions first.
+        Random positions.
         '''
-        nearest_positions = []
-        if len(board.availables) > board.n_in_row:
-            nearest_positions = self.find_nearest_position_first(board)
-        if len(nearest_positions):
-            return random.choice(nearest_positions)
-        else:
-            return random.choice(board.availables)
-
-    def find_nearest_position_first(self, board):
-        '''
-        The method find nearest position sets
-        '''
-        
-        nearest_positions = set() # create a set
-        h, w = board.board.shape[0], board.board.shape[1]
-        unavailables = board.unavailables
-        for i, j in unavailables:
-            # up down right left
-            if i < h - 1:
-                nearest_positions.add((i+1, j))
-            if i > 0:
-                nearest_positions.add((i-1, j))
-            if j < w - 1:
-                nearest_positions.add((i, j+1))
-            if j > 0:
-                nearest_positions.add((i, j-1))
-            # diag
-            if i < h - 1 and j < w - 1:
-                nearest_positions.add((i+1, j+1))
-            if i > 0 and j < w -1:
-                nearest_positions.add((i-1, j+1))
-            if i < h -1 and j > 0:
-                nearest_positions.add((i+1, j-1))
-            if i > 0 and j > 0:
-                nearest_positions.add((i-1, j-1))
-        # remove unavailables in nearest position
-        nearest_positions = list(set(nearest_positions) - set(unavailables))
-        return nearest_positions
-
+        return random.choice(board.availables)
 
     def traverse(self, node):
         '''

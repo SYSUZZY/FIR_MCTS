@@ -25,13 +25,17 @@ class MCTSNode(object):
         self.visited_times = 0
 
         self._untried_actions = None
+        self._untried_far_actions = []
     
 
     @property
     def untried_actions(self):
         if self._untried_actions is None:
-            self._untried_actions = deepcopy(self.board.availables)
-        random.shuffle(self._untried_actions)
+            pattern_children = self.find_naive_pattern()
+            nearest_children = list(set(self.find_nearest_position_first()) - set(pattern_children))
+            available_children = list(set(deepcopy(self.board.availables)) - set(pattern_children) - set(nearest_children))
+            random.shuffle(available_children)
+            self._untried_actions = pattern_children + nearest_children + available_children
         return self._untried_actions
         
 
@@ -66,7 +70,8 @@ class MCTSNode(object):
             player = -self.player                 # change player
 
             state_mat = deepcopy(self.board.board)
-            position = self.untried_actions.pop() # random choose an availables position
+            print(self.untried_actions)
+            position = self.untried_actions.pop(0) # random choose an availables position
             state = Board(state_mat, self.board.n_in_row)
 
             state.move(position, player)
@@ -81,6 +86,62 @@ class MCTSNode(object):
             print('Reach the maximum children number!')
             return None
     
+    def find_naive_pattern(self):
+        op = -1 * self.player
+        agent = self.player
+        board = self.board.board
+        # chosen child
+        children_list = []
+		# desired pattern
+        fourInRow = ([op, op, op, op, 0], [0, op, op, op, op])
+        threeInRow = ([0, op, op, op, 0], [agent, op, op, op, 0], [0, op, op, op, agent])
+        for i in range(len(board)):
+            for j in range(len(board)):
+                allPattern = ( [board[p][j] if p >= 0 and p < len(board) else -2 for p in range(i-4, i+1)], \
+								[board[p][j] if p >= 0 and p < len(board) else -2 for p in range(i, i+5)], \
+								[board[i][p] if p >= 0 and p < len(board) else -2 for p in range(j-4, j+1)], \
+								[board[i][p] if p >= 0 and p < len(board) else -2 for p in range(j, j+5)], \
+								[board[i+p][j+p] if i + p >= 0 and i + p < len(board) and j + p >= 0 and j + p < len(board) else -2 for p in range(-4, 0)], \
+								[board[i+p][j+p] if i + p >= 0 and i + p < len(board) and j + p >= 0 and j + p < len(board) else -2 for p in range(0, 5)] 
+                                    )
+                for pattern in allPattern:
+                    if pattern in fourInRow and board[i][j] == 0:
+                        children_list = [(i, j)] + children_list
+                    elif pattern in threeInRow and board[i][j] == 0:
+                        children_list.append((i, j))
+        return children_list
+
+    def find_nearest_position_first(self):
+        '''
+        The method find nearest position sets
+        '''
+
+        nearest_positions = set() # create a set
+        h, w = self.board.board.shape[0], self.board.board.shape[1]
+        unavailables = self.board.unavailables
+        for i, j in unavailables:
+            # up down right left
+            if i < h - 1:
+                nearest_positions.add((i+1, j))
+            if i > 0:
+                nearest_positions.add((i-1, j))
+            if j < w - 1:
+                nearest_positions.add((i, j+1))
+            if j > 0:
+                nearest_positions.add((i, j-1))
+            # diag
+            if i < h - 1 and j < w - 1:
+                nearest_positions.add((i+1, j+1))
+            if i > 0 and j < w -1:
+                nearest_positions.add((i-1, j+1))
+            if i < h -1 and j > 0:
+                nearest_positions.add((i+1, j-1))
+            if i > 0 and j > 0:
+                nearest_positions.add((i-1, j-1))
+        # remove unavailables in nearest position
+        nearest_positions = list(set(nearest_positions) - set(unavailables))
+        return nearest_positions
+
 
     def show_MCTS(self):
         que = Queue()
