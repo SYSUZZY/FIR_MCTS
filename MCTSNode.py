@@ -2,6 +2,7 @@ import random
 from queue import Queue
 from copy import deepcopy
 from Board import Board
+import Config
 
 class MCTSNode(object):
     '''
@@ -16,7 +17,7 @@ class MCTSNode(object):
 
         self.children = []
 
-        self.max_expend_num = 10 # A node has 10 children or available position num at most
+        self.max_expend_num = Config.CHILDREN_NUM
         if len(board.availables) < self.max_expend_num:
             self.max_expend_num = len(board.availables)
 
