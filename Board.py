@@ -89,50 +89,58 @@ class Board(object):
             # Check in vertical
             if (row >= 1) and (row <= height-self.n_in_row+1):
                 pattern_5 = [state[row-1+i][col] for i in range(self.n_in_row)]
-                pattern_3 = [state[row+i][col] for i in range(self.n_in_row-2)]
-                empty_in_pattern = self.__find_position_by_pattern(pattern_5, pattern_3)
-                for empty_index in empty_in_pattern:
-                    children_list.append((row-1+empty_index, col))
+                if 0 in pattern_5:
+                    pattern_3 = [state[row+i][col] for i in range(self.n_in_row-2)]
+                    empty_in_pattern = self.__find_position_by_pattern(pattern_5, pattern_3)
+                    for empty_index in empty_in_pattern:
+                        children_list.append((row-1+empty_index, col))
             if (row >= 0) and (row <= height-self.n_in_row):
                 pattern_5 = [state[row+i][col] for i in range(self.n_in_row)]
-                if (len(set(pattern_5)) == 2) and (abs(sum(pattern_5)) == self.n_in_row-1):
-                    children_list.append((row+4, col))
+                if 0 in pattern_5:
+                    if (len(set(pattern_5)) == 2) and (abs(sum(pattern_5)) == self.n_in_row-1):
+                        children_list.append((row+4, col))
 
             # Check in horizontal
             if (col >= 1) and (col <= width-self.n_in_row+1):
                 pattern_5 = [state[row][col-1+i] for i in range(self.n_in_row)]
-                pattern_3 = [state[row][col+i] for i in range(self.n_in_row-2)]
-                empty_in_pattern = self.__find_position_by_pattern(pattern_5, pattern_3)
-                for empty_index in empty_in_pattern:
-                    children_list.append((row, col-1+empty_index))
+                if 0 in pattern_5:
+                    pattern_3 = [state[row][col+i] for i in range(self.n_in_row-2)]
+                    empty_in_pattern = self.__find_position_by_pattern(pattern_5, pattern_3)
+                    for empty_index in empty_in_pattern:
+                        children_list.append((row, col-1+empty_index))
             if (col >= 0) and (col <= width-self.n_in_row):
                 pattern_5 = [state[row][col+i] for i in range(self.n_in_row)]
-                if (len(set(pattern_5)) == 2) and (abs(sum(pattern_5)) == self.n_in_row-1):
-                    children_list.append((row, col+4))
+                if 0 in pattern_5:
+                    if (len(set(pattern_5)) == 2) and (abs(sum(pattern_5)) == self.n_in_row-1):
+                        children_list.append((row, col+4))
 
             # Check in diagonal
             if (row >= 1) and (row <= height-self.n_in_row+1) and (col >= 1) and (col <= width-self.n_in_row+1):
                 pattern_5 = [state[row-1+i][col-1+i] for i in range(self.n_in_row)]
-                pattern_3 = [state[row+i][col+i] for i in range(self.n_in_row-2)]
-                empty_in_pattern = self.__find_position_by_pattern(pattern_5, pattern_3)
-                for empty_index in empty_in_pattern:
-                    children_list.append((row-1+empty_index, col-1+empty_index))
+                if 0 in pattern_5:
+                    pattern_3 = [state[row+i][col+i] for i in range(self.n_in_row-2)]
+                    empty_in_pattern = self.__find_position_by_pattern(pattern_5, pattern_3)
+                    for empty_index in empty_in_pattern:
+                        children_list.append((row-1+empty_index, col-1+empty_index))
             if (col >= 0) and (col <= width-self.n_in_row) and (row >= 0) and (row <= height-self.n_in_row):
                 pattern_5 = [state[row+i][col+i] for i in range(self.n_in_row)]
-                if (len(set(pattern_5)) == 2) and (abs(sum(pattern_5)) == self.n_in_row-1):
-                    children_list.append((row+4, col+4))
+                if 0 in pattern_5:
+                    if (len(set(pattern_5)) == 2) and (abs(sum(pattern_5)) == self.n_in_row-1):
+                        children_list.append((row+4, col+4))
 
             # Check in anti-diagonal
             if (row >= 1) and (row <= height-self.n_in_row+1) and (col >= self.n_in_row-2) and (col <= width-2):
                 pattern_5 = [state[row-1+i][col+1-i] for i in range(self.n_in_row)]
-                pattern_3 = [state[row+i][col-i] for i in range(self.n_in_row-2)]
-                empty_in_pattern = self.__find_position_by_pattern(pattern_5, pattern_3)
-                for empty_index in empty_in_pattern:
-                    children_list.append((row-1+empty_index, col+1-empty_index))
+                if 0 in pattern_5:
+                    pattern_3 = [state[row+i][col-i] for i in range(self.n_in_row-2)]
+                    empty_in_pattern = self.__find_position_by_pattern(pattern_5, pattern_3)
+                    for empty_index in empty_in_pattern:
+                        children_list.append((row-1+empty_index, col+1-empty_index))
             if (col >= self.n_in_row-1) and (col <= width-1) and (row >= 0) and (row <= height-self.n_in_row):
                 pattern_5 = [state[row+i][col-i] for i in range(self.n_in_row)]
-                if (len(set(pattern_5)) == 2) and (abs(sum(pattern_5)) == self.n_in_row-1):
-                    children_list.append((row+4, col-4))
+                if 0 in pattern_5:
+                    if (len(set(pattern_5)) == 2) and (abs(sum(pattern_5)) == self.n_in_row-1):
+                        children_list.append((row+4, col-4))
         return list(set(children_list))
 
 
