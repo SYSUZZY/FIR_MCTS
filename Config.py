@@ -1,11 +1,11 @@
-
 '''
 Game
 '''
 windows_size = (640,640)
 AI_THREAD_DONE = 1024
 AI_THREAD_WORK = 2048
-
+FIRST = 1
+SECOND = -1
 
 '''
 Chess
@@ -16,8 +16,8 @@ n_in_row = 5
 '''
 Player
 '''
-HUMAN = 1
-AI = -1
+HUMAN = SECOND
+AI = FIRST
 
 '''
 AI
@@ -25,3 +25,5 @@ AI
 THINK_TIME = 3
 SIMULATION_TIMES = 50000
 CHILDREN_NUM = 15
+CONFIDENT = 6/board_size-0.5
+

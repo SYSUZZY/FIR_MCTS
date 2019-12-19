@@ -7,6 +7,7 @@ from copy import deepcopy
 
 from MCTSNode import MCTSNode
 from Board import Board
+import Config
 
 max_workers=4
 
@@ -20,7 +21,7 @@ class MCTS(object):
         self.max_decision_time = max_decision_time
         self.max_simulation_times = max_simulation_times
 
-        self.confident = 0.05 # the constant in UCT score function
+        self.confident = Config.CONFIDENT # the constant in UCT score function
         self.simulation_times = 0 # the times of simulation
         self.begin_time = time.time() # start the MCTS time
 
@@ -60,6 +61,10 @@ class MCTS(object):
         '''
         if node.player == result:
             node.win_times += 1
+        elif result == None:
+            node.win_times += 0.1
+        else:
+            node.win_times += -0.2
         node.visited_times += 1
         if node.parent == None:
             # The node is a root

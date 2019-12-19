@@ -35,7 +35,7 @@ class GameEngine(object):
         '''
         Game
         '''
-        self.turn = Config.HUMAN
+        self.turn = Config.FIRST
         self.signal = multiprocessing.Queue(1)
         self.ai_process = None
         self.check_board = False
@@ -71,6 +71,7 @@ class GameEngine(object):
             # Render
             self.__render()
 
+
     def __events_handler(self):
         '''
         Handle the events from IO
@@ -80,10 +81,11 @@ class GameEngine(object):
             if event.type == pygame.QUIT:
                 self.is_quit = True
                 pygame.quit()
-                exit()
+                # exit()
                 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                self.mouse_position = event.pos
+                if self.turn == self.human.id:
+                    self.mouse_position = event.pos
 
 
     def __player_turn_detect(self):

@@ -153,6 +153,6 @@ class Board(object):
         elif (abs(pattern_sum) == self.n_in_row-2) and (pattern_set == 2):
             empty_in_pattern.append(pattern_5.index(0))
             empty_in_pattern.append(pattern_5.index(0, 1))
-        elif (abs(pattern_sum) == self.n_in_row-3) and (len(set(pattern_3)) == 1):
+        elif (abs(pattern_sum) == self.n_in_row-3) and (len(set(pattern_3)) == 1) and (list(set(pattern_3)) != 0):
             empty_in_pattern.append(pattern_5.index(0))
         return list(set(empty_in_pattern))

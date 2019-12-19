@@ -33,13 +33,11 @@ class MCTSNode(object):
     @property
     def untried_actions(self):
         if self._untried_actions is None:
-            pattern_children = self.find_naive_pattern()
+            pattern_children = list((set(self.board.unavailables)|set(self.find_naive_pattern()))-set(self.board.unavailables))
             nearest_children = list(set(self.find_nearest_position_first()) - set(pattern_children))
             available_children = list(set(deepcopy(self.board.availables)) - set(pattern_children) - set(nearest_children))
-            # available_children = deepcopy(self.board.availables)
-            # random.shuffle(available_children)
             self._untried_actions = pattern_children + nearest_children + available_children
-            # self._untried_actions = available_children
+
         return self._untried_actions
         
 
