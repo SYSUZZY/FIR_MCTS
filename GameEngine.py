@@ -2,13 +2,11 @@ import numpy as np
 from queue import Queue
 
 import pygame
-import threading
 import multiprocessing
 from copy import deepcopy
 
 import Config
 from AI import AI
-
 from Board import Board
 from Player import Player
 
