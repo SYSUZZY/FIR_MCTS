@@ -222,7 +222,7 @@ class GameEngine(object):
         """
         self.clock.tick(10)
         self.draw_board(self.screen)
-        self.draw_stone(self.screen, self.board.board)
+        self.draw_stone(self.screen, self.board.state)
         if self.is_over:
             self.draw_win_or_lose(self.screen)
         pygame.display.update()

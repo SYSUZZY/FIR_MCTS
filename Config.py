@@ -10,7 +10,7 @@ AI_THREAD_WORK = 2048
 '''
 Chess
 '''
-board_size = 5
+board_size = 6
 n_in_row = 5
 
 '''

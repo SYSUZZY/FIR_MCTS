@@ -16,7 +16,7 @@ class MCTS(object):
     '''
 
     def __init__(self, board, max_decision_time, max_simulation_times):
-        self.board =  Board(board.board, board.n_in_row) # Chess board
+        self.board =  Board(board.state, board.n_in_row) # Chess board
         self.max_decision_time = max_decision_time
         self.max_simulation_times = max_simulation_times
 
@@ -43,32 +43,10 @@ class MCTS(object):
         '''
         time_mcts = time.time()
         while self.resources_left():
-            # print(root.board.board)
-            # print(root.board.availables)
-            # print(root.board.unavailables)
-            # if self.is_terminal(root):
-                # print(root.board.board)
-                # print(root.board.availables)
-                # print(root.board.unavailables)
-                # print('error1')
             leaf = self.traverse(root)         # leaf is unvisited node
-            # if self.is_terminal(root):
-                # print(root.board.board)
-                # print(root.board.availables)
-                # print(root.board.unavailables)
-                # print('error2')
             simulation_result = self.rollout(leaf)
-            # if self.is_terminal(root):
-            #     print(root.board.board)
-            #     print(root.board.availables)
-            #     print(root.board.unavailables)
-            #     print('error3')
-            #     exit()
-                # print(root.board.check_game_result())
-                # print(root.board.game_result())
             self.backpropagate(leaf, simulation_result)
             self.simulation_times = root.visited_times
-            # print(len(root.children))
         # root.show_MCTS()
         print('Simulation Times: {}'.format(self.simulation_times))
         print('Simulation time: {}'.format(time.time()-time_mcts))
@@ -118,6 +96,7 @@ class MCTS(object):
         '''
         return random.choice(board.availables)
 
+
     def traverse(self, node):
         '''
         Traverse all the nodes and find the node that is not fully expeanded.
@@ -127,12 +106,9 @@ class MCTS(object):
         '''
         while not self.is_terminal(node):
             if not node.fully_expanded():
-                # print('error here')
                 return node.expand_child()
             else:
-                # print('error here1')
                 node = node.get_best_child(self.uct)
-        # print('error here2')
         return node
 
 
@@ -150,5 +126,3 @@ class MCTS(object):
         Score function
         '''
         return (node.win_times/node.visited_times) + self.confident*np.sqrt(np.log(node.parent.visited_times)/node.visited_times)
-
-
