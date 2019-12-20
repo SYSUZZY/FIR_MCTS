@@ -10,7 +10,7 @@ SECOND = -1
 '''
 Chess
 '''
-board_size = 6
+board_size = 8
 n_in_row = 5
 
 '''
@@ -22,8 +22,8 @@ AI = FIRST
 '''
 AI
 '''
-THINK_TIME = 3
-SIMULATION_TIMES = 50000
-CHILDREN_NUM = 15
+THINK_TIME = 10
+SIMULATION_TIMES = 10000
+CHILDREN_NUM = 10
 CONFIDENT = 6/board_size-0.5
 

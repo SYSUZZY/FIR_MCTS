@@ -33,10 +33,15 @@ class MCTSNode(object):
     @property
     def untried_actions(self):
         if self._untried_actions is None:
-            pattern_children = list((set(self.board.unavailables)|set(self.find_naive_pattern()))-set(self.board.unavailables))
+            # pattern_children = list((set(self.board.unavailables)|set(self.find_naive_pattern()))-set(self.board.unavailables))
+            pattern_children = self.find_naive_pattern()
             nearest_children = list(set(self.find_nearest_position_first()) - set(pattern_children))
-            available_children = list(set(deepcopy(self.board.availables)) - set(pattern_children) - set(nearest_children))
-            self._untried_actions = pattern_children + nearest_children + available_children
+            small_board_children = list(set(self.small_board_strategy())-set(pattern_children)-set(nearest_children))
+            available_children = list(set(deepcopy(self.board.availables)) - set(pattern_children) - set(nearest_children) \
+                -set(small_board_children))
+            self._untried_actions = pattern_children + nearest_children + small_board_children + available_children
+            # available_children = deepcopy(self.board.availables)
+            # self._untried_actions = available_children
 
         return self._untried_actions
         
@@ -90,6 +95,23 @@ class MCTSNode(object):
         children_list = self.board.find_position_by_pattern()
         return children_list
 
+
+    def small_board_strategy(self):
+        '''
+        Randomly select the center position
+        '''
+        unavailables_num = len(self.board.unavailables)
+        s_len = int((1/2)*(unavailables_num/2)+7/2)
+        # print(s_len)
+        if s_len >= Config.board_size:
+            # Small board size equal to the original board size
+            return []
+        boundary_gap = int((Config.board_size-s_len)/2)
+        small_board_position = [(boundary_gap+i, boundary_gap+j) for i in range(s_len) for j in range(s_len) \
+            if self.board.state[boundary_gap+i][boundary_gap+j] == 0]
+        sb_len = len(small_board_position)
+        return random.sample(small_board_position, int(sb_len/2))
+        
 
     def find_nearest_position_first(self):
         '''
