@@ -49,19 +49,19 @@ class Board(object):
             row = chess[0]; col = chess[1]
             # Check in vertical
             if row <= height-self.n_in_row:
-                if len(set([state[row+i][col] for i in range(self.n_in_row)])) == 1:
+                if abs(sum([state[row+i][col] for i in range(self.n_in_row)])) == self.n_in_row:
                     return True, state[row][col]
             # Check in horizontal
             if col <= width-self.n_in_row:
-                if len(set([state[row][col+i] for i in range(self.n_in_row)])) == 1:
+                if abs(sum([state[row][col+i] for i in range(self.n_in_row)])) == self.n_in_row:
                     return True, state[row][col]
             # Check in diagonal
             if (row <= height-self.n_in_row) and (col <= width-self.n_in_row):
-                if len(set([state[row+i][col+i] for i in range(self.n_in_row)])) == 1:
+                if abs(sum([state[row+i][col+i] for i in range(self.n_in_row)])) == self.n_in_row:
                     return True, state[row][col]
             # Check in anti-diagonal
             if (row <= height-self.n_in_row) and (col >= self.n_in_row-1):
-                if len(set([state[row+i][col-i] for i in range(self.n_in_row)])) == 1:
+                if abs(sum([state[row+i][col-i] for i in range(self.n_in_row)])) == self.n_in_row:
                     return True, state[row][col]
 
         # No one wins till no vacancy in state
